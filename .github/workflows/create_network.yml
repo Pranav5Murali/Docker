@@ -17,10 +17,10 @@ jobs:
 
       # Step 2: Make Scripts Executable
       - name: Make Scripts Executable
-        run: chmod +x ./deploy_docker_network.sh
+        run: chmod +x ./bridge_network_create.sh
 
       # Step 3: Run the Deployment Script
       - name: Deploy Docker Network
         env:
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-        run: bash ./deploy_docker_network.sh "$SSH_PASSWORD"
+        run: bash ./bridge_network_create.sh "$SSH_PASSWORD"
