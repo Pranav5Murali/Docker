@@ -22,5 +22,5 @@ jobs:
       # Step 3: Run the Deployment Script
       - name: Deploy Docker Network
         env:
-          SSH_PASSWORD: ${{ vm.SSH_PASSWORD }}
+          SSH_PASSWORD: ${{ VM.SSH_PASSWORD }}
         run: bash ./bridge_network_create.sh "$SSH_PASSWORD"
