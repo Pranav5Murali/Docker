@@ -7,8 +7,8 @@ SSH_PASSWORD="$1"
 REMOTE_USER="user1"
 REMOTE_IP="192.168.1.105"
 
-# Local repository path (current directory)
-LOCAL_REPO_PATH="./Docker"
+# Local repository path (current directory, repository root)
+LOCAL_REPO_PATH="."
 
 # Remote path to copy the files
 REMOTE_REPO_PATH="/home/user1/Docker"
@@ -30,7 +30,7 @@ EOF
 
 # Step 3: Copy the repository files to the remote machine using scp
 echo "Copying repository files to the remote machine..."
-sshpass -p "$SSH_PASSWORD" scp -r "$LOCAL_REPO_PATH" "$REMOTE_USER@$REMOTE_IP:/home/user1/"
+sshpass -p "$SSH_PASSWORD" scp -r "$LOCAL_REPO_PATH"/* "$REMOTE_USER@$REMOTE_IP:$REMOTE_REPO_PATH"
 
 # Step 4: Connect to the remote machine and execute the script
 sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE_IP" <<EOF
@@ -48,3 +48,4 @@ sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE
 EOF
 
 echo "Script execution completed!"
+
