@@ -15,12 +15,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Make Scripts Executable
+      # Step 2: Make Deployment Script Executable
       - name: Make Deployment Script Executable
         run: chmod +x ./bridge_network_create.sh
 
       # Step 3: Run the Deployment Script
       - name: Deploy Docker Network
         env:
-          SSH_PASSWORD: ${{ VM.SSH_PASSWORD }}
+          SSH_PASSWORD: ${{ secrets.VM }}
         run: bash ./bridge_network_create.sh "$SSH_PASSWORD"
