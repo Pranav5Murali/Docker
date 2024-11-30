@@ -22,6 +22,14 @@ sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE
   echo "Cloning the repository..."
   git clone $GIT_REPO $REPO_PATH
 
+  whoami
+  uname -a
+  hostname -i
+
+  # Ensure the Python script is executable
+  echo "Setting executable permissions for the Python script..."
+  chmod +x $REPO_PATH/create_docker_network.py
+
   # Navigate to the repository and execute the Python script
   echo "Executing the Python script to create the Docker network..."
   python3 $REPO_PATH/create_docker_network.py
