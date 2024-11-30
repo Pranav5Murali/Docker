@@ -1,4 +1,4 @@
-name: Deploy Docker Network
+name: Deploy Docker Network1
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       # Step 2: Make Scripts Executable
-      - name: Make Scripts Executable
+      - name: Make Deployment Script Executable
         run: chmod +x ./bridge_network_create.sh
 
       # Step 3: Run the Deployment Script
