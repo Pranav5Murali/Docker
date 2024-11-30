@@ -7,16 +7,24 @@ SSH_PASSWORD="$1"
 REMOTE_USER="user1"
 REMOTE_IP="192.168.1.105"
 
-# Path to the Python script
-PYTHON_SCRIPT_PATH="./create_docker_network.py"
+# Git repository and branch details
+GIT_REPO="https://github.com/Pranav5Murali/Docker.git"
+REPO_PATH="/home/user1/Docker"
 
-# Upload the Python script to the remote machine
-echo "Uploading the Python script to the remote machine..."
-sshpass -p "$SSH_PASSWORD" scp "$PYTHON_SCRIPT_PATH" "$REMOTE_USER@$REMOTE_IP:/home/user1/"
+# Connect to the remote machine and execute commands
+echo "Connecting to the remote machine and setting up the Docker network..."
+sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE_IP" <<EOF
+  # Remove any existing repository clone
+  echo "Cleaning up old repository..."
+  rm -rf $REPO_PATH
 
-# Execute the Python script on the remote machine
-echo "Executing the Python script on the remote machine..."
-sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE_IP" "python3 /home/user1/create_docker_network.py"
+  # Clone the repository
+  echo "Cloning the repository..."
+  git clone $GIT_REPO $REPO_PATH
 
+  # Navigate to the repository and execute the Python script
+  echo "Executing the Python script to create the Docker network..."
+  python3 $REPO_PATH/create_docker_network.py
+EOF
 
 echo "Script execution completed!"

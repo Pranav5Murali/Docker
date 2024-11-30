@@ -1,9 +1,9 @@
-name: Deploy Docker Network 
+name: Deploy Docker Network
 
 on:
   push:
     branches:
-      - main  # Adjust as per your branch
+      - main  # Adjust to the branch you want to trigger the workflow
 
 jobs:
   deploy-network:
@@ -11,16 +11,16 @@ jobs:
     environment: vm
 
     steps:
-      # Step 1: Checkout Code
+      # Step 1: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
       # Step 2: Make Scripts Executable
       - name: Make Scripts Executable
-        run: chmod +x ./create_docker_network.py ./bridge_network_create.sh
+        run: chmod +x ./deploy_docker_network.sh
 
-      # Step 3: Execute Bash Script to Upload and Execute Python Script
-      - name: Deploy Docker Bridge Network
+      # Step 3: Run the Deployment Script
+      - name: Deploy Docker Network
         env:
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-        run: bash ./bridge_network_create.sh "$SSH_PASSWORD"
+        run: bash ./deploy_docker_network.sh "$SSH_PASSWORD"
