@@ -17,9 +17,9 @@ try:
 except docker.errors.NotFound:
     print("No existing container named '%s' found." % container_name)
 
-# Build the Docker image
-print("Building Docker image '%s' using jitesoft/python..." % image_name)
-client.images.build(path=".", tag=image_name)
+# Pull the pre-built image from Docker Hub
+print("Pulling Docker image '%s' from Docker Hub..." % image_name)
+client.images.pull(image_name)
 
 # Run the container
 print("Running Docker container '%s' on network '%s'..." % (container_name, network_name))
