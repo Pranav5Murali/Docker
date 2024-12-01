@@ -7,7 +7,7 @@ client = docker.from_env()
 image_name = "jitesoft/python"
 container_name = "jitesoft-python-container"
 network_name = "surge"  # Custom bridge network
-app_command = "python /app/app.py"  # Command to run the Python application
+app_command = "python3 /app/app.py"  # Command to run the Python application
 
 # Stop and remove existing container if it exists
 try:
