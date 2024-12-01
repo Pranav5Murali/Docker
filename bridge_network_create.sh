@@ -27,6 +27,9 @@ sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE
   echo "Cleaning up old repository on remote machine..."
   rm -rf $REMOTE_REPO_PATH
 EOF
+  whoami
+  uname -a
+  hostname -i
 
 # Step 3: Copy the repository files to the remote machine using scp
 echo "Copying repository files to the remote machine..."
@@ -34,9 +37,6 @@ sshpass -p "$SSH_PASSWORD" scp -r "$LOCAL_REPO_PATH"/* "$REMOTE_USER@$REMOTE_IP:
 
 # Step 4: Connect to the remote machine and execute the script
 sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE_IP" <<EOF
-  whoami
-  uname -a
-  hostname -i
 
   # Ensure the Python script is executable
   echo "Setting executable permissions for the Python script..."
