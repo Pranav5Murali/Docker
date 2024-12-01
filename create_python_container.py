@@ -24,7 +24,7 @@ client.images.pull(image_name)
 
 # Run the container with the command to execute app.py
 print("Running Docker container '%s' on network '%s' with command '%s'..." % (container_name, network_name, app_command))
-client.containers.run(
+container = client.containers.run(
     image=image_name,
     name=container_name,
     network=network_name,  # Attach to the custom bridge network
@@ -34,3 +34,11 @@ client.containers.run(
 )
 
 print("The container '%s' is running successfully on the '%s' network!" % (container_name, network_name))
+
+# Execute Python commands inside the running container
+print("Executing Python commands inside the container...")
+exec_result = container.exec_run("python3 -c \"print('Inside Python Prompt')\"")
+print("Command output: %s" % exec_result.output.decode())
+
+exec_result = container.exec_run("python3 -c \"import platform; print('Python Version:', platform.python_version())\"")
+print("Command output: %s" % exec_result.output.decode())
