@@ -1,4 +1,4 @@
-name: Deploy Docker Network3
+name: Deploy Docker Network1
 
 on:
   push:
