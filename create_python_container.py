@@ -7,8 +7,8 @@ client = docker.from_env()
 image_name = "jitesoft/python"
 container_name = "jitesoft-python-container"
 network_name = "surge"  # Custom bridge network
-# Modified command to ensure the container stays alive
-app_command = "sh -c 'python3 /app/app.py && tail -f /dev/null'"
+# Modified command to start the Python interactive shell
+app_command = "python3"
 
 # Check if the container exists
 containers = client.containers.list(all=True, filters={"name": container_name})
@@ -25,7 +25,7 @@ else:
 print("Pulling Docker image '%s' from Docker Hub..." % image_name)
 client.images.pull(image_name)
 
-# Run the container with the command to execute app.py and keep the container alive
+# Run the container with the Python 3 interactive shell
 print("Running Docker container '%s' on network '%s' with command '%s'..." % (container_name, network_name, app_command))
 container = client.containers.run(
     image=image_name,
@@ -33,15 +33,18 @@ container = client.containers.run(
     network=network_name,  # Attach to the custom bridge network
     ports={"5000/tcp": 5000},  # Map port 5000
     detach=True,
-    command=app_command  # Run the app.py script and keep the container alive
+    command=app_command  # Start Python interactive shell
 )
 
 print("The container '%s' is running successfully on the '%s' network!" % (container_name, network_name))
 
 # Execute Python commands inside the running container
-print("Executing Python commands inside the container...")
-exec_result = container.exec_run("python3 -c \"print('Inside Python Prompt')\"")
+print("Executing Python commands inside the Python shell in the container...")
+exec_result = container.exec_run("python3 -c \"print('Welcome to Python Shell')\"")
 print("Command output: %s" % exec_result.output.decode())
 
 exec_result = container.exec_run("python3 -c \"import platform; print('Python Version:', platform.python_version())\"")
+print("Command output: %s" % exec_result.output.decode())
+
+exec_result = container.exec_run("python3 -c \"x = 5 + 10; print('Calculation Result:', x)\"")
 print("Command output: %s" % exec_result.output.decode())
