@@ -4,7 +4,7 @@ import docker
 client = docker.from_env()
 
 # Configuration
-image_name = "jitesoft-python-app"
+image_name = "jitesoft/python"
 container_name = "jitesoft-python-container"
 network_name = "surge"  # Custom bridge network
 
