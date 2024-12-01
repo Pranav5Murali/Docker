@@ -7,22 +7,25 @@ client = docker.from_env()
 image_name = "jitesoft/python"
 container_name = "jitesoft-python-container"
 network_name = "surge"  # Custom bridge network
-app_command = "python3 /app/app.py"  # Command to run the Python application
+# Modified command to ensure the container stays alive
+app_command = "sh -c 'python3 /app/app.py && tail -f /dev/null'"
 
-# Stop and remove existing container if it exists
-try:
-    container = client.containers.get(container_name)
+# Check if the container exists
+containers = client.containers.list(all=True, filters={"name": container_name})
+if containers:
+    print("Stopping and removing existing container '%s'..." % container_name)
+    container = containers[0]
     container.stop()
     container.remove()
     print("The container '%s' was stopped and removed successfully." % container_name)
-except docker.errors.NotFound:
+else:
     print("No existing container named '%s' found." % container_name)
 
 # Pull the base image (jitesoft/python)
 print("Pulling Docker image '%s' from Docker Hub..." % image_name)
 client.images.pull(image_name)
 
-# Run the container with the command to execute app.py
+# Run the container with the command to execute app.py and keep the container alive
 print("Running Docker container '%s' on network '%s' with command '%s'..." % (container_name, network_name, app_command))
 container = client.containers.run(
     image=image_name,
@@ -30,7 +33,7 @@ container = client.containers.run(
     network=network_name,  # Attach to the custom bridge network
     ports={"5000/tcp": 5000},  # Map port 5000
     detach=True,
-    command=app_command  # Run the app.py script inside the container
+    command=app_command  # Run the app.py script and keep the container alive
 )
 
 print("The container '%s' is running successfully on the '%s' network!" % (container_name, network_name))
