@@ -13,39 +13,35 @@ LOCAL_REPO_PATH="."
 # Remote path to copy the files
 REMOTE_REPO_PATH="/home/user1/Docker"
 
-# Connect to the remote machine and execute commands
-echo "Connecting to the remote machine and setting up the Docker network..."
+echo "Starting deployment..."
 
-# Step 1: Ensure the repository files are prepared locally
-if [ ! -d "$LOCAL_REPO_PATH" ]; then
-  echo "Error: Local repository path '$LOCAL_REPO_PATH' does not exist."
-  exit 1
-fi
+# Step 1: Verify local files
+echo "Checking local repository files..."
+ls -la "$LOCAL_REPO_PATH"
 
-# Step 2: Remove any existing repository files on the remote machine
+# Step 2: Clean remote directory and create new one
 sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE_IP" <<EOF
-  echo "Cleaning up old repository on remote machine..."
+  echo "Cleaning and setting up remote directory..."
   rm -rf $REMOTE_REPO_PATH
+  mkdir -p $REMOTE_REPO_PATH
 EOF
-  whoami
-  uname -a
-  hostname -i
 
-# Step 3: Copy the repository files to the remote machine using scp
-echo "Copying repository files to the remote machine..."
-sshpass -p "$SSH_PASSWORD" scp -r "$LOCAL_REPO_PATH"/* "$REMOTE_USER@$REMOTE_IP:$REMOTE_REPO_PATH"
+# Step 3: Copy repository files to the remote machine
+echo "Copying files to the remote machine..."
+sshpass -p "$SSH_PASSWORD" scp -rv "$LOCAL_REPO_PATH"/* "$REMOTE_USER@$REMOTE_IP:$REMOTE_REPO_PATH"
 
-# Step 4: Connect to the remote machine and execute the script
+# Step 4: Verify files on the remote machine
+echo "Verifying files on the remote machine..."
 sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE_IP" <<EOF
+  echo "Files in $REMOTE_REPO_PATH:"
+  ls -la $REMOTE_REPO_PATH
+EOF
 
-  # Ensure the Python script is executable
-  echo "Setting executable permissions for the Python script..."
+# Step 5: Set permissions and execute the script
+sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$REMOTE_IP" <<EOF
   chmod +x $REMOTE_REPO_PATH/create_docker_network.py
-
-  # Navigate to the repository and execute the Python script
-  echo "Executing the Python script to create the Docker network..."
+  echo "Executing Python script..."
   python3 $REMOTE_REPO_PATH/create_docker_network.py
 EOF
 
-echo "Script execution completed!"
-
+echo "Deployment completed!"
